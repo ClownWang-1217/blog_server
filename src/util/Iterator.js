@@ -22,8 +22,11 @@ class SqlIterator extends BaseIterator{
                     count++;    
                     return { done: false, value: `${that.keys[count - 1]} = ${that.values[count - 1]} ` };
                 } else {
-                    return { done: true, value: undefined };
+                    return { done: true};
                 }
+            },
+            return() {
+                return { done: true };
             }
         };
     }
