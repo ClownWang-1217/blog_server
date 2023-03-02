@@ -1,52 +1,65 @@
 //depose route of blog
 const { SuccessModel, FailModel } = require('../model/responseModel');
-const { getList,getDetail } = require('../controller/blog')
-const handleBlogRoute = (req, res,callback) => {
-    const method = req.method;
-    const path = req.path;
-    const query = req.query;
-    const {
-        author,
-        keywords,
-        id
-    } = query;
+const { getList, getDetailByID, updateBlogByID, deleteBlogByID, createBlog } = require('../controller/blog')
+const handleBlogRoute = (req, res, callback) => {
+    try {
+        const method = req.method;
+        const path = req.path;
+        const query = req.query;
 
-    if (method === 'GET' && path === "/api/blog/list") {
-        getList().then((res)=>{
-            if(res){
-                console.log('dfdfdf',res)
-                callback(new SuccessModel(res));
-            }
-        }).catch((err)=>{
-            console.log('err',err)
-        });
-    }   
-    if (method === 'GET' && path === "/api/blog/detail") {
-
-        const responseDate = getDetail(id)
-        callback(new SuccessModel(responseDate));
-    }
-    if (method === 'POST' && path === "/api/blog/new") {
-
-        console.log(req.body);
-        const responseDate = req.body
-        return responseDate;
-    }
-    if (method === 'POST' && path === "/api/blog/update") {
-        const responseDate = {
-            name: '汪涛',
-            id: '1'
+        if (method === 'GET' && path === "/api/blog/list") {
+            getList().then((res) => {
+                if (res) {
+                    callback(new SuccessModel(res, 'success'));
+                }
+            }).catch((err) => {
+                callback(new FailModel(err, 'failure'));
+            });
+        } else if (method === 'GET' && path === "/api/blog/detail") {
+            getDetailByID(query.id).then((res) => {
+                if (res) {
+                    callback(new SuccessModel(res, 'success'));
+                }
+            }).catch((err) => {
+                callback(new FailModel(err, 'failure'));
+            });
+        } else if (method === 'GET' && path === "/api/blog/delete") {
+            deleteBlogByID(query.id).then((res) => {
+                if (res) {
+                    callback(new SuccessModel(res, 'success'));
+                }
+            }).catch((err) => {
+                callback(new FailModel(err, 'failure'));
+            });
+        } else if (method === 'POST' && path === "/api/blog/new") {
+            createBlog(req.body).then((res) => {
+                if (res) {
+                    callback(new SuccessModel(res, 'success'));
+                }
+            }).catch((err) => {
+                callback(new FailModel(err, 'failure'));
+            });
+        } else if (method === 'POST' && path === "/api/blog/update") {
+            const {
+                id,
+                ...rest
+            } = req.body;
+            updateBlogByID(id, rest).then((res) => {
+                if (res) {
+                    callback(new SuccessModel(res, 'success'));
+                }
+            }).catch((err) => {
+                callback(new FailModel(err, 'failure'));
+            });
+        } else {
+            callback(new FailModel({ data: '404 not found' }, 'failure'))
         }
-        return responseDate;
+
+    } catch (error) {
+        callback(new FailModel({ data: '505' }, error))
     }
-    if (method === 'POST' && path === "/api/blog/delete") {
-        const responseDate = {
-            name: '汪涛',
-            id: '1'
-        }
-        return responseDate;
-    }
+
 
 }
 
-module.exports = handleBlogRoute; 
+module.exports = handleBlogRoute;

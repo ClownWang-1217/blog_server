@@ -14,8 +14,7 @@ const getPostData = (req) => {
         }
         let postData = '';
         req.on('data',(chunk)=>{
-            console.log('chunk',chunk)
-            postData+=chunk.toString();
+            postData += chunk.toString();
         });
         req.on('end',()=>{
             if(!postData){

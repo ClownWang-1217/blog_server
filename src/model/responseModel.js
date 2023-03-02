@@ -14,14 +14,14 @@ class BaseResponseModel {
 class SuccessModel extends BaseResponseModel {
     constructor(data, message) {
         super(data, message);
-        this.errno = 0;
+        this.code = 200;
     }
 }
 
 class FailModel extends BaseResponseModel {
     constructor(data, message) {
         super(data, message);
-        this.errno = -1;
+        this.code = -1;
     }
 }
 
